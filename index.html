@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kimumu Gallery Wall ❤️</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      transition: 0.3s ease;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0077cc, #005fa3);
+      color: white;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    header h2 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .theme-switch {
+      margin: 1rem auto;
+      text-align: center;
+    }
+
+    .theme-btn {
+      background: #eee;
+      border: none;
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      margin: 0 0.3rem;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: 0.3s;
+    }
+
+    .theme-btn:hover {
+      background: #ccc;
+    }
+
+    .upload-box {
+      display: none;
+      background: #fff;
+      margin: 1rem auto;
+      padding: 1rem;
+      max-width: 500px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .post {
+      background: white;
+      width: 100%;
+      max-width: 320px;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .post img, .post video {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 0.5rem;
+    }
+
+    .post p {
+      font-size: 1rem;
+      margin: 0.5rem 0;
+    }
+
+    .timestamp {
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.7rem;
+    }
+
+    .actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #0077cc;
+      font-weight: bold;
+    }
+
+    .comments {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding: 1rem;
+      text-align: center;
+      background: #ddd;
+      font-size: 0.9rem;
+    }
+
+    input, select, textarea, button {
+      margin-top: 0.6rem;
+      padding: 0.5rem;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 80px;
+    }
+
+    /* Themes */
+    .dark {
+      background: #121212;
+      color: #eee;
+    }
+
+    .dark .post, .dark .upload-box {
+      background: #1e1e1e;
+      color: white;
+    }
+
+    .dark footer {
+      background: #222;
+    }
+
+    .pink {
+      background: #fff0f5;
+      color: #333;
+    }
+
+    .pink .post, .pink .upload-box {
+      background: #ffe6f0;
+    }
+
+    .pink footer {
+      background: #fcdce6;
+    }
+
+    @media (max-width: 600px) {
+      .gallery {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>Kimumu 2025 Gallery Wall 📸</h2>
+  <p>Only Edwin can upload | Friends can view, like, and comment ❤️</p>
+</header>
+
+<div class="theme-switch">
+  <button class="theme-btn" onclick="setTheme('')">🌞 Light</button>
+  <button class="theme-btn" onclick="setTheme('dark')">🌙 Dark</button>
+  <button class="theme-btn" onclick="setTheme('pink')">🌸 Pink</button>
+</div>
+
+<div class="upload-box" id="uploadBox">
+  <select id="type">
+    <option value="photo">📷 Photo</option>
+    <option value="video">🎥 Video</option>
+    <option value="text">📝 Text</option>
+  </select>
+  <input type="file" id="file" accept="image/*,video/*">
+  <textarea id="text" placeholder="Write something (optional)..."></textarea>
+  <button onclick="upload()">Upload Memory</button>
+</div>
+
+<div class="gallery" id="gallery">
+  <div class="post">
+    <img src="https://via.placeholder.com/300x200" alt="Memory">
+    <p>We vibed in the Kimumu trip 🔥</p>
+    <small>🕒 Posted on: <span class="timestamp">2025-07-27 23:45</span></small>
+    <div class="actions">
+      <button onclick="likePost(this)">❤️ Like (<span>0</span>)</button>
+      <button onclick="commentPrompt(this)">💬 Comment</button>
+    </div>
+    <div class="comments"></div>
+  </div>
+</div>
+
+<footer>Made by Edwin Kibiwot ❤️ | Powered by GitHub Pages</footer>
+
+<script>
+  // Show uploader with secret key
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "E") {
+      document.getElementById("uploadBox").style.display = "block";
+      alert("Uploader unlocked for Edwin.");
+    }
+  });
+
+  function setTheme(theme) {
+    document.body.className = theme;
+  }
+
+  function upload() {
+    const type = document.getElementById("type").value;
+    const file = document.getElementById("file").files[0];
+    const text = document.getElementById("text").value;
+    const time = new Date().toLocaleString();
+
+    let reader = new FileReader();
+
+    reader.onload = function () {
+      let post = document.createElement("div");
+      post.className = "post";
+
+      if (type === "photo") {
+        post.innerHTML = `<img src="${reader.result}" alt="Image">`;
+      } else if (type === "video") {
+        post.innerHTML = `<video controls src="${reader.result}"></video>`;
+      }
+
+      if (text.trim()) {
+        post.innerHTML += `<p>${text}</p>`;
+      }
+
+      post.innerHTML += `
+        <small>🕒 Posted on: <span class="timestamp">${time}</span></small>
+        <div class="actions">
+          <button onclick="likePost(this)">❤️ Like (<span>0</span>)</button>
+          <button onclick="commentPrompt(this)">💬 Comment</button>
+        </div>
+        <div class="comments"></div>
+      `;
+
+      document.getElementById("gallery").prepend(post);
+      document.getElementById("file").value = '';
+      document.getElementById("text").value = '';
+    };
+
+    if (type === "text" && text.trim()) {
+      let post = document.createElement("div");
+      post.className = "post";
+      post.innerHTML = `<p>${text}</p>
+        <small>🕒 Posted on: <span class="timestamp">${time}</span></small>
+        <div class="actions">
+          <button onclick="likePost(this)">❤️ Like (<span>0</span>)</button>
+          <button onclick="commentPrompt(this)">💬 Comment</button>
+        </div>
+        <div class="comments"></div>`;
+      document.getElementById("gallery").prepend(post);
+      document.getElementById("text").value = '';
+    } else if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      alert("Upload a file or write something.");
+    }
+  }
+
+  function likePost(btn) {
+    let span = btn.querySelector("span");
+    span.textContent = parseInt(span.textContent) + 1;
+  }
+
+  function commentPrompt(btn) {
+    const comment = prompt("Your comment:");
+    if (comment) {
+      const post = btn.closest(".post");
+      const commentsDiv = post.querySelector(".comments");
+      commentsDiv.innerHTML += `<p>💬 ${comment}</p>`;
+    }
+  }
+</script>
+
+</body>
+</html>
